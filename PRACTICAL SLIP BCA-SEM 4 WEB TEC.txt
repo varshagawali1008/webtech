@@ -1,0 +1,1982 @@
+slip 1
+
+Q1. Write a PHP script to get the PHP version and configuration information.
+->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHP Version and Configuration Information</title>
+</head>
+<body>
+    <h2>PHP Version and Configuration Information</h2>
+
+    <?php
+    // Get PHP version
+    $phpVersion = phpversion();
+    echo "<p>PHP Version: $phpVersion</p>";
+
+    // Get PHP configuration information
+    $phpInfo = phpinfo(INFO_ALL);
+
+    // Output PHP configuration information
+    // Note: phpinfo() function directly outputs the information to the browser
+    // So, we'll capture it in output buffer and then display it
+    ob_start();
+    phpinfo(INFO_ALL);
+    $phpConfigInfo = ob_get_clean();
+
+    echo "<h3>PHP Configuration Information:</h3>";
+    echo $phpConfigInfo;
+    ?>
+</body>
+</html>
+
+Q2. Write a menu driven program to perform the following operations on associative arrays:
+a) Merge the given arrays.
+b) Find the intersection of two arrays.
+c) Find the union of two arrays.
+d) Find set difference of two arrays
+->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Associative Array Operations</title>
+</head>
+<body>
+    <h2>Associative Array Operations</h2>
+    <form method="post">
+        <label for="option">Select an operation:</label>
+        <select name="option" id="option">
+            <option value="merge">Merge Arrays</option>
+            <option value="intersection">Find Intersection</option>
+            <option value="union">Find Union</option>
+            <option value="difference">Find Set Difference</option>
+        </select>
+        <br><br>
+        <label for="array1">Enter array1:</label>
+        <input type="text" name="array1" id="array1" required><br>
+        <label for="array2">Enter array2:</label>
+        <input type="text" name="array2" id="array2" required><br>
+        <input type="submit" value="Submit">
+    </form>
+
+    <?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $option = $_POST["option"];
+        $array1 = $_POST["array1"];
+        $array2 = $_POST["array2"];
+
+        // Convert input strings to arrays
+        $array1 = json_decode($array1, true);
+        $array2 = json_decode($array2, true);
+
+        switch ($option) {
+            case "merge":
+                $result = array_merge($array1, $array2);
+                echo "<h3>Merged Array:</h3>";
+                break;
+            case "intersection":
+                $result = array_intersect_assoc($array1, $array2);
+                echo "<h3>Intersection:</h3>";
+                break;
+            case "union":
+                $result = array_unique(array_merge($array1, $array2), SORT_REGULAR);
+                echo "<h3>Union:</h3>";
+                break;
+            case "difference":
+                $result = array_diff_assoc($array1, $array2);
+                echo "<h3>Set Difference:</h3>";
+                break;
+            default:
+                echo "Invalid option";
+        }
+
+        // Display the result
+        echo "<pre>";
+        print_r($result);
+        echo "</pre>";
+    }
+    ?>
+</body>
+</html>
+
+slip 2
+Q1. Write a PHP script to display student information on web page.
+-><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Information</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 50%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<?php
+// Define student information
+$students = array(
+    array("Name", "Age", "Grade"),
+    array("John Doe", 15, 9),
+    array("Jane Smith", 16, 10),
+    array("Michael Johnson", 17, 11),
+    // Add more students as needed
+);
+
+// Display student information using HTML table tags
+echo "<h2>Student Information</h2>";
+echo "<table>";
+foreach ($students as $row) {
+    echo "<tr>";
+    foreach ($row as $cell) {
+        echo "<td>$cell</td>";
+    }
+    echo "</tr>";
+}
+echo "</table>";
+?>
+
+</body>
+</html>
+
+Q2. Write a PHP program to define Interface shape which has two method as area() and
+volume(). Define a constant PI. Create a class Cylinder implement this interface and
+calculate area and Volume.
+-><?php
+
+interface Shape {
+    public function area();
+    public function volume();
+}
+
+class Cylinder implements Shape {
+    const PI = 3.14159;
+    private $radius;
+    private $height;
+
+    public function __construct($radius, $height) {
+        $this->radius = $radius;
+        $this->height = $height;
+    }
+
+    public function area() {
+        $circle_area = self::PI * pow($this->radius, 2);
+        $side_area = 2 * self::PI * $this->radius * $this->height;
+        return 2 * $circle_area + $side_area;
+    }
+
+    public function volume() {
+        return self::PI * pow($this->radius, 2) * $this->height;
+    }
+}
+
+// Example usage:
+$cylinder = new Cylinder(5, 10);
+echo "Cylinder Area: " . $cylinder->area() . " square units\n";
+echo "Cylinder Volume: " . $cylinder->volume() . " cubic units\n";
+
+?>
+slip 3
+Q1. Write a PHP script to script to display time table of your class( use HTML table tags in
+echo).
+-><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Timetable</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 50%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<?php
+// Define the timetable data
+$timetable = array(
+    array("Time", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"),
+    array("8:00 - 9:00", "Maths", "Science", "English", "History", "Geography"),
+    array("9:00 - 10:00", "Science", "English", "Maths", "Geography", "History"),
+    array("10:00 - 11:00", "English", "Maths", "Science", "History", "Geography"),
+    // Add more rows for other hours if needed
+);
+
+// Display the timetable using HTML table tags
+echo "<h2>Class Timetable</h2>";
+echo "<table>";
+foreach ($timetable as $row) {
+    echo "<tr>";
+    foreach ($row as $cell) {
+        echo "<td>$cell</td>";
+    }
+    echo "</tr>";
+}
+echo "</table>";
+?>
+
+</body>
+</html>
+
+Q2. Write a PHP script for the following: Design a form to accept the details of 5 different
+items, such as item code, item name, units sold, rate. Display the bill in the tabular format.
+Use only 4 text boxes. (Hint : Use of explode function.)
+-><!DOCTYPE html>
+<html>
+<head>
+    <title>Item Details Form</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Enter Item Details</h2>
+
+<form method="post">
+    <label for="item_details">Enter Item Details (Code, Name, Units Sold, Rate - separated by comma):</label><br>
+    <textarea id="item_details" name="item_details" rows="5" cols="50"></textarea><br><br>
+    <input type="submit" value="Submit">
+</form>
+
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if(isset($_POST['item_details'])) {
+        $item_details = $_POST['item_details'];
+        $items = explode("\n", $item_details); // Splitting each item by newline
+
+        echo "<h2>Bill</h2>";
+        echo "<table>";
+        echo "<tr><th>Item Code</th><th>Item Name</th><th>Units Sold</th><th>Rate</th><th>Total</th></tr>";
+
+        foreach ($items as $item) {
+            $details = explode(",", $item);
+            if(count($details) == 4) { // Ensure all details are provided
+                $code = trim($details[0]);
+                $name = trim($details[1]);
+                $units_sold = trim($details[2]);
+                $rate = trim($details[3]);
+                $total = $units_sold * $rate;
+
+                echo "<tr><td>$code</td><td>$name</td><td>$units_sold</td><td>$rate</td><td>$total</td></tr>";
+            }
+        }
+
+        echo "</table>";
+    } else {
+        echo "Please enter item details.";
+    }
+}
+?>
+
+</body>
+</html>
+
+slip 4
+Q1. Write a PHP script to declare three variables and print maximum among them.
+-><?php
+
+// Declare three variables
+$var1 = 10;
+$var2 = 20;
+$var3 = 15;
+
+// Find the maximum among the variables
+$max = max($var1, $var2, $var3);
+
+// Print the maximum
+echo "The maximum among $var1, $var2, and $var3 is: $max";
+
+?>
+
+Q2. Write AJAX program to read a text file and print the contents of the file when the user
+clicks on the Print button. 
+->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read Text File</title>
+</head>
+<body>
+    <h2>Read Text File</h2>
+    <button id="printButton">Print</button>
+    <div id="fileContent"></div>
+
+    <script>
+        document.getElementById("printButton").addEventListener("click", function() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("fileContent").innerHTML = this.responseText;
+                }
+            };
+            xhttp.open("GET", "file.txt", true);
+            xhttp.send();
+        });
+    </script>
+</body>
+</html>
+
+slip 5
+Q1. Write a PHP script to check number 153 is Armstrong or not.
+-><?php
+
+// Function to check if a number is an Armstrong number
+function isArmstrong($number) {
+    $sum = 0;
+    $temp = $number;
+    $numberOfDigits = strlen($number);
+
+    // Calculate the sum of the nth power of each digit
+    while ($temp > 0) {
+        $digit = $temp % 10;
+        $sum += pow($digit, $numberOfDigits);
+        $temp = intval($temp / 10);
+    }
+
+    // Check if the number is equal to the sum of nth power of its digits
+    if ($number == $sum) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// Check if the number 153 is an Armstrong number
+$number = 153;
+if (isArmstrong($number)) {
+    echo "$number is an Armstrong number.";
+} else {
+    echo "$number is not an Armstrong number.";
+}
+
+?>
+
+Q2. Write a menu driven program to perform the following operations on an associative
+array:
+a) Display the elements of an array along with the keys.
+b) Display the size of an array
+->
+<?php
+
+// Sample associative array
+$associativeArray = array(
+    "name" => "John",
+    "age" => 30,
+    "city" => "New York",
+    "country" => "USA"
+);
+
+// Function to display elements of the array along with keys
+function displayArrayWithKeys($array) {
+    echo "Elements of the array along with keys:\n";
+    foreach ($array as $key => $value) {
+        echo "$key: $value\n";
+    }
+    echo "\n";
+}
+
+// Function to display the size of the array
+function displayArraySize($array) {
+    $size = count($array);
+    echo "Size of the array: $size\n\n";
+}
+
+// Menu-driven program
+while (true) {
+    echo "Menu:\n";
+    echo "a) Display the elements of the array along with keys\n";
+    echo "b) Display the size of the array\n";
+    echo "c) Exit\n";
+    echo "Enter your choice (a/b/c): ";
+
+    $choice = trim(fgets(STDIN));
+
+    switch ($choice) {
+        case 'a':
+            displayArrayWithKeys($associativeArray);
+            break;
+        case 'b':
+            displayArraySize($associativeArray);
+            break;
+        case 'c':
+            echo "Exiting the program...\n";
+            exit;
+        default:
+            echo "Invalid choice. Please enter a valid option.\n";
+    }
+}
+
+?>
+
+slip 6
+Q1. Write a PHP script to check whether accepted number is prime or not
+->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime Number Checker</title>
+</head>
+<body>
+    <h2>Prime Number Checker</h2>
+    <form action="" method="post">
+        <label for="number">Enter a number:</label><br>
+        <input type="number" id="number" name="number" required><br><br>
+        <input type="submit" value="Check Prime">
+    </form>
+
+    <?php
+    // Function to check if a number is prime
+    function isPrime($number) {
+        // Prime numbers are greater than 1
+        if ($number <= 1) {
+            return false;
+        }
+        // Check for divisibility by numbers up to the square root of the number
+        for ($i = 2; $i <= sqrt($number); $i++) {
+            if ($number % $i == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Check if form data is submitted
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Get the input number from the form
+        $inputNumber = $_POST['number'];
+
+        // Check if the input number is prime
+        if (isPrime($inputNumber)) {
+            echo "<h3>$inputNumber is a prime number.</h3>";
+        } else {
+            echo "<h3>$inputNumber is not a prime number.</h3>";
+        }
+    }
+    ?>
+</body>
+</html>
+
+Q2. Write a menu driven program the following operation on an associative array
+a) Reverse the order of each element’s key-value pair. [Hint: array_flip()]
+b) Traverse the element in an array in random order. [Hint: shuffle()]
+->
+<?php
+
+// Sample associative array
+$associativeArray = array(
+    "name" => "John",
+    "age" => 30,
+    "city" => "New York",
+    "country" => "USA"
+);
+
+// Function to reverse the order of each element's key-value pair
+function reverseKeyValuePairs($array) {
+    echo "Reversed order of each element's key-value pair:\n";
+    $reversedArray = array_flip($array);
+    foreach ($reversedArray as $key => $value) {
+        echo "$key: $value\n";
+    }
+    echo "\n";
+}
+
+// Function to traverse the elements in an array in random order
+function traverseRandomOrder($array) {
+    echo "Traversing elements in array in random order:\n";
+    $keys = array_keys($array);
+    shuffle($keys);
+    foreach ($keys as $key) {
+        echo "$key: " . $array[$key] . "\n";
+    }
+    echo "\n";
+}
+
+// Menu-driven program
+while (true) {
+    echo "Menu:\n";
+    echo "a) Reverse the order of each element’s key-value pair\n";
+    echo "b) Traverse the elements in an array in random order\n";
+    echo "c) Exit\n";
+    echo "Enter your choice (a/b/c): ";
+
+    $choice = trim(fgets(STDIN));
+
+    switch ($choice) {
+        case 'a':
+            reverseKeyValuePairs($associativeArray);
+            break;
+        case 'b':
+            traverseRandomOrder($associativeArray);
+            break;
+        case 'c':
+            echo "Exiting the program...\n";
+            exit;
+        default:
+            echo "Invalid choice. Please enter a valid option.\n";
+    }
+}
+
+?>
+
+slip 7
+Q1. Design a HTML form to accept a string. Write a php function to reverse a string.
+-><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String Reverser</title>
+</head>
+<body>
+    <h2>String Reverser</h2>
+    <form action="" method="post">
+        <label for="string">Enter a string:</label><br>
+        <input type="text" id="string" name="string" required><br><br>
+        <input type="submit" value="Reverse String">
+    </form>
+
+    <?php
+    // Function to reverse a string
+    function reverseString($string) {
+        return strrev($string);
+    }
+
+    // Check if form data is submitted
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Get the input string from the form
+        $inputString = $_POST['string'];
+
+        // Reverse the input string
+        $reversedString = reverseString($inputString);
+
+        // Display the reversed string
+        echo "<h3>Reversed string: $reversedString</h3>";
+    }
+    ?>
+</body>
+</html>
+
+Q2. Declare array. Reverse the order of elements, making the first element last and last
+element first and similarly rearranging other array elements.[Hint : array_reverse()]
+->
+<?php
+
+// Declare an array
+$array = array("apple", "banana", "cherry", "date", "grape");
+
+// Reverse the order of elements
+$reversedArray = array_reverse($array);
+
+// Display the original and reversed arrays
+echo "Original Array:\n";
+print_r($array);
+echo "\nReversed Array:\n";
+print_r($reversedArray);
+
+?>
+
+slip 8
+Q1. Design a HTML form to accept a string. Write a PHP function that checks whether a
+passed string is a palindrome or not? 
+->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palindrome Checker</title>
+</head>
+<body>
+    <h2>Palindrome Checker</h2>
+    <form action="check_palindrome.php" method="post">
+        <label for="string">Enter a string:</label><br>
+        <input type="text" id="string" name="string" required><br><br>
+        <input type="submit" value="Check Palindrome">
+    </form>
+</body>
+</html>
+
+<?php
+
+// Function to check if a string is a palindrome
+function isPalindrome($string) {
+    // Remove spaces and convert to lowercase
+    $string = strtolower(str_replace(' ', '', $string));
+    
+    // Reverse the string
+    $reversedString = strrev($string);
+    
+    // Check if the original string is equal to its reverse
+    if ($string === $reversedString) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// Check if form data is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Get the input string from the form
+    $inputString = $_POST['string'];
+
+    // Check if the input string is a palindrome
+    if (isPalindrome($inputString)) {
+        echo "<h3>'$inputString' is a palindrome.</h3>";
+    } else {
+        echo "<h3>'$inputString' is not a palindrome.</h3>";
+    }
+}
+
+?>
+
+Q2. Declare a Multidimensional Array. Display specific element from a Multidimensional
+array. Also delete given element from the Multidimensional array.(After each operation
+display array content.) 
+-><?php
+
+// Declare a multidimensional array
+$multiArray = array(
+    array("apple", "banana", "cherry"),
+    array("orange", "pear", "plum"),
+    array("grape", "kiwi", "melon")
+);
+
+// Display the original array
+echo "Original Array:\n";
+printArray($multiArray);
+
+// Function to display the content of an array
+function printArray($array) {
+    foreach ($array as $row) {
+        foreach ($row as $element) {
+            echo $element . " ";
+        }
+        echo "\n";
+    }
+    echo "\n";
+}
+
+// Function to display a specific element from the array
+function displayElement($array, $rowIndex, $colIndex) {
+    if (isset($array[$rowIndex][$colIndex])) {
+        echo "Element at index [$rowIndex][$colIndex]: " . $array[$rowIndex][$colIndex] . "\n";
+    } else {
+        echo "Invalid index.\n";
+    }
+}
+
+// Function to delete a given element from the array
+function deleteElement(&$array, $value) {
+    foreach ($array as $rowIndex => &$row) {
+        if (($key = array_search($value, $row)) !== false) {
+            unset($row[$key]);
+        }
+    }
+}
+
+// Display a specific element from the array
+displayElement($multiArray, 1, 2);
+
+// Delete a given element from the array
+deleteElement($multiArray, "banana");
+
+// Display the updated array
+echo "Array after deletion:\n";
+printArray($multiArray);
+
+?>
+
+
+slip 9
+Q1. Write a PHP script to print following floyd’s triangle.
+1
+2 3
+4 5 6
+7 8 9 10
+-><?php
+
+// Function to print Floyd's Triangle
+function printFloydsTriangle($rows) {
+    $number = 1; // Initialize number to start from 1
+    
+    for ($i = 1; $i <= $rows; $i++) {
+        for ($j = 1; $j <= $i; $j++) {
+            echo $number++ . " ";
+        }
+        echo "<br>";
+    }
+}
+
+// Number of rows in Floyd's Triangle
+$rows = 4;
+
+// Print Floyd's Triangle
+printFloydsTriangle($rows);
+
+?>
+
+Q2. Write a menu driven program to perform the following stack related operations.
+a) Insert an element in stack.
+b) Delete an element from stack.[Hint: array_push(), array_pop()]
+-><?php
+
+// Initialize an empty stack
+$stack = array();
+
+// Function to insert an element into the stack
+function insertElement(&$stack, $element) {
+    array_push($stack, $element);
+    echo "Element '$element' inserted into the stack.\n";
+}
+
+// Function to delete an element from the stack
+function deleteElement(&$stack) {
+    if (empty($stack)) {
+        echo "Stack is empty. Cannot delete element.\n";
+    } else {
+        $deletedElement = array_pop($stack);
+        echo "Element '$deletedElement' deleted from the stack.\n";
+    }
+}
+
+// Menu-driven program
+while (true) {
+    echo "Menu:\n";
+    echo "a) Insert an element into the stack\n";
+    echo "b) Delete an element from the stack\n";
+    echo "c) Exit\n";
+    echo "Enter your choice (a/b/c): ";
+
+    $choice = trim(fgets(STDIN));
+
+    switch ($choice) {
+        case 'a':
+            echo "Enter the element to insert: ";
+            $element = trim(fgets(STDIN));
+            insertElement($stack, $element);
+            break;
+        case 'b':
+            deleteElement($stack);
+            break;
+        case 'c':
+            echo "Exiting the program...\n";
+            exit;
+        default:
+            echo "Invalid choice. Please enter a valid option.\n";
+    }
+
+    echo "Current stack: ";
+    print_r($stack);
+    echo "\n";
+}
+
+?>
+slip 10
+Q1. Write a PHP script to display source code of a webpage
+-><!DOCTYPE html>
+<html>
+<head>
+    <title>View Source Code</title>
+</head>
+<body>
+
+<?php
+// Define the URL of the webpage whose source code you want to display
+$url = "https://example.com";
+
+// Retrieve the source code of the webpage
+$html = file_get_contents($url);
+
+// Display the source code
+echo "<pre>";
+echo htmlspecialchars($html); // Convert HTML characters to entities to display properly
+echo "</pre>";
+?>
+
+</body>
+</html>
+
+Q2. Write a PHP script to following xml file.
+<cricket>
+<player> abe</player>
+<rums>100</runs>
+<wickets>20</wickets>
+</cricket>
+Store data for 5 players and display data of players who have scored more than 100 runs.
+->
+<?php
+
+// Load the XML file
+$xmlFile = 'cricket_data.xml';
+$xml = simplexml_load_file($xmlFile);
+
+// Initialize an array to store player data
+$players = array();
+
+// Extract data for each player
+for ($i = 0; $i < 5; $i++) {
+    $playerData = array(
+        'name' => (string)$xml->player[$i],
+        'runs' => (int)$xml->runs[$i],
+        'wickets' => (int)$xml->wickets[$i]
+    );
+    $players[] = $playerData;
+}
+
+// Display data of players who have scored more than 100 runs
+echo "Players who have scored more than 100 runs:\n";
+foreach ($players as $player) {
+    if ($player['runs'] > 100) {
+        echo "Name: " . $player['name'] . ", Runs: " . $player['runs'] . ", Wickets: " . $player['wickets'] . "\n";
+    }
+}
+
+?>
+
+slip 11
+Q1. Write a PHP script to get the PHP version and configuration information
+-><!DOCTYPE html>
+<html>
+<head>
+    <title>PHP Information</title>
+</head>
+<body>
+
+<?php
+// Get PHP version
+$phpVersion = phpversion();
+echo "<h2>PHP Version</h2>";
+echo "<p>$phpVersion</p>";
+
+// Display PHP configuration information
+echo "<h2>PHP Configuration</h2>";
+echo "<p><a href=\"javascript:window.location.reload(true)\">Refresh to view PHP configuration</a></p>";
+echo "<p>Or you can <a href=\"?phpinfo=1\">click here</a> to view PHP configuration</p>";
+
+if (isset($_GET['phpinfo']) && $_GET['phpinfo'] == 1) {
+    phpinfo();
+}
+?>
+
+</body>
+</html>
+
+Q2. Write a PHP script to accept following XML file
+<subject>
+<subject code>BCA 245</subject code>
+<subject name> Web Technology Laboratory </subject name>
+</subject>
+Store data of 5 subjects as display subject code of Wen Technology Laboratory.
+->
+<?php
+
+// Load the XML file
+$xmlFile = 'subjects.xml';
+$xml = simplexml_load_file($xmlFile);
+
+// Initialize an array to store subject data
+$subjects = array();
+
+// Extract data for each subject
+for ($i = 0; $i < 5; $i++) {
+    $subjectData = array(
+        'code' => (string)$xml->subject[$i]->code,
+        'name' => (string)$xml->subject[$i]->name
+    );
+    $subjects[] = $subjectData;
+}
+
+// Display subject code of Web Technology Laboratory
+echo "Subject code of Web Technology Laboratory:\n";
+foreach ($subjects as $subject) {
+    if ($subject['name'] === 'Web Technology Laboratory') {
+        echo $subject['code'] . "\n";
+    }
+}
+
+?>
+Q2. Design a HTML form to accept a string. Write a PHP script for the following.
+a) Write a function to count the total number of Vowels from the script.
+b) Show the occurrences of each Vowel from the script
+->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Count Vowels</title>
+</head>
+<body>
+    <h2>Enter a string</h2>
+    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+        <label for="inputString">String:</label>
+        <input type="text" id="inputString" name="inputString">
+        <input type="submit" value="Submit">
+    </form>
+
+    <?php
+    // Function to count the total number of vowels in a string
+    function countTotalVowels($string) {
+        return preg_match_all('/[aeiouAEIOU]/', $string);
+    }
+
+    // Function to show the occurrences of each vowel in a string
+    function showVowelOccurrences($string) {
+        $vowels = array('a', 'e', 'i', 'o', 'u');
+        $occurrences = array();
+        
+        foreach ($vowels as $vowel) {
+            $count = preg_match_all("/$vowel/i", $string); // Case-insensitive match
+            if ($count > 0) {
+                $occurrences[$vowel] = $count;
+            }
+        }
+        
+        return $occurrences;
+    }
+
+    // Check if form is submitted and input string is provided
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["inputString"])) {
+        $inputString = $_POST["inputString"];
+
+        // Count total number of vowels
+        $totalVowels = countTotalVowels($inputString);
+        
+        // Show occurrences of each vowel
+        $vowelOccurrences = showVowelOccurrences($inputString);
+        
+        // Display results
+        echo "<h2>Results</h2>";
+        echo "Total number of vowels: $totalVowels<br>";
+        echo "Occurrences of each vowel:<br>";
+        foreach ($vowelOccurrences as $vowel => $count) {
+            echo "$vowel: $count<br>";
+        }
+    } else {
+        // If form is not submitted or input string is not provided, display error message
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            echo "<h2>Error</h2>";
+            echo "Please provide a string.";
+        }
+    }
+    ?>
+</body>
+</html>
+
+slip 12
+Q1. Write a PHP script to display student information on web page.
+->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Information</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 50%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<?php
+// Define student information
+$students = array(
+    array("Name", "Age", "Grade"),
+    array("John Doe", 15, 9),
+    array("Jane Smith", 16, 10),
+    array("Michael Johnson", 17, 11),
+    // Add more students as needed
+);
+
+// Display student information using HTML table tags
+echo "<h2>Student Information</h2>";
+echo "<table>";
+foreach ($students as $row) {
+    echo "<tr>";
+    foreach ($row as $cell) {
+        echo "<td>$cell</td>";
+    }
+    echo "</tr>";
+}
+echo "</table>";
+?>
+
+</body>
+</html>
+
+Q2. Write a PHP program to define Interface shape which has two method as area() and
+volume(). Define a constant PI. Create a class Cylinder implement this interface and
+calculate area and Volume.
+->
+<?php
+
+interface Shape {
+    public function area();
+    public function volume();
+}
+
+class Cylinder implements Shape {
+    const PI = 3.14159;
+    private $radius;
+    private $height;
+
+    public function __construct($radius, $height) {
+        $this->radius = $radius;
+        $this->height = $height;
+    }
+
+    public function area() {
+        $circle_area = self::PI * pow($this->radius, 2);
+        $side_area = 2 * self::PI * $this->radius * $this->height;
+        return 2 * $circle_area + $side_area;
+    }
+
+    public function volume() {
+        return self::PI * pow($this->radius, 2) * $this->height;
+    }
+}
+
+// Example usage:
+$cylinder = new Cylinder(5, 10);
+echo "Cylinder Area: " . $cylinder->area() . " square units\n";
+echo "Cylinder Volume: " . $cylinder->volume() . " cubic units\n";
+
+?>
+slip 13
+->
+Q1. Write a PHP script to script to display time table of your class( use HTML table tags in
+echo).
+->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Class Timetable</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 50%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<?php
+// Define the timetable data
+$timetable = array(
+    array("Time", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"),
+    array("8:00 - 9:00", "Maths", "Science", "English", "History", "Geography"),
+    array("9:00 - 10:00", "Science", "English", "Maths", "Geography", "History"),
+    array("10:00 - 11:00", "English", "Maths", "Science", "History", "Geography"),
+    // Add more rows for other hours if needed
+);
+
+// Display the timetable using HTML table tags
+echo "<h2>Class Timetable</h2>";
+echo "<table>";
+foreach ($timetable as $row) {
+    echo "<tr>";
+    foreach ($row as $cell) {
+        echo "<td>$cell</td>";
+    }
+    echo "</tr>";
+}
+echo "</table>";
+?>
+
+</body>
+</html>
+
+Q2 Write PHP script to generate an XML code in the following format
+<?xml version=1.0”?>
+<ABC College>
+<Computer Application Department>
+<Course> BCA(Science) </Course>
+<Student Strength > 80</Student Strength>
+<Number of Teachers>12</Number of Teachers>
+</ABC College>
+</Computer Application Department>
+-><?php
+
+// Create XMLWriter object
+$xml = new XMLWriter();
+$xml->openMemory();
+$xml->setIndent(true);
+$xml->startDocument('1.0', 'UTF-8');
+
+// Start ABC College
+$xml->startElement('ABC College');
+
+// Start Computer Application Department
+$xml->startElement('Computer Application Department');
+
+// Add Course element
+$xml->writeElement('Course', 'BCA(Science)');
+
+// Add Student Strength element
+$xml->writeElement('Student Strength', '80');
+
+// Add Number of Teachers element
+$xml->writeElement('Number of Teachers', '12');
+
+// End Computer Application Department
+$xml->endElement();
+
+// End ABC College
+$xml->endElement();
+
+// Output the XML
+echo $xml->outputMemory(true);
+
+?>
+slip 14
+Q1. Write a PHP script to declare three variables and print maximum among them.
+<?php
+
+// Declare three variables
+$a = 10;
+$b = 25;
+$c = 15;
+
+// Find the maximum among the three variables
+$max = $a;
+if ($b > $max) {
+    $max = $b;
+}
+if ($c > $max) {
+    $max = $c;
+}
+
+// Print the maximum value
+echo "The maximum value among $a, $b, and $c is: $max";
+
+?>
+Q2. Write a PHP script for the following: Design a form to accept two strings. Compare the
+two strings using both methods (= = operator & strcmp function). Append second string to
+the first string. Accept the position from the user; from where the characters from the first
+string are reversed. (Use radio buttons) 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>String Comparison and Manipulation</title>
+</head>
+<body>
+
+<h2>String Comparison and Manipulation</h2>
+
+<form method="post">
+    <label for="string1">Enter the first string:</label><br>
+    <input type="text" id="string1" name="string1" required><br><br>
+
+    <label for="string2">Enter the second string:</label><br>
+    <input type="text" id="string2" name="string2" required><br><br>
+
+    <input type="radio" id="option1" name="position_option" value="start" checked>
+    <label for="option1">Start</label>
+
+    <input type="radio" id="option2" name="position_option" value="end">
+    <label for="option2">End</label><br><br>
+
+    <input type="submit" value="Submit">
+</form>
+
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $string1 = $_POST['string1'];
+    $string2 = $_POST['string2'];
+    $position_option = $_POST['position_option'];
+
+    // Compare the strings using == operator
+    echo "<h3>Comparison using == operator:</h3>";
+    if ($string1 == $string2) {
+        echo "The two strings are equal.";
+    } else {
+        echo "The two strings are not equal.";
+    }
+    echo "<br><br>";
+
+    // Compare the strings using strcmp function
+    echo "<h3>Comparison using strcmp function:</h3>";
+    $comparison = strcmp($string1, $string2);
+    if ($comparison == 0) {
+        echo "The two strings are equal.";
+    } elseif ($comparison < 0) {
+        echo "String 1 comes before String 2.";
+    } else {
+        echo "String 1 comes after String 2.";
+    }
+    echo "<br><br>";
+
+    // Append second string to the first string
+    $result = ($position_option == 'start') ? $string2 . $string1 : $string1 . $string2;
+
+    // Accept position from the user to reverse characters from the first string
+    $position = intval(strlen($string1) / 2); // Default position
+    if ($position_option == 'end') {
+        $position = strlen($string1);
+    }
+
+    // Reverse characters from the first string at the specified position
+    $string1 = substr_replace($string1, strrev(substr($string1, $position)), $position);
+
+    // Output the result
+    echo "<h3>Result:</h3>";
+    echo "Appended string: $result<br>";
+    echo "First string with reversed characters: $string1<br>";
+}
+?>
+
+</body>
+</html>
+
+slip 15
+Q1. Write a PHP script to check number 153 is Armstrong or not.
+-><?php
+
+// Function to check if a number is Armstrong or not
+function isArmstrong($number) {
+    $originalNumber = $number;
+    $sum = 0;
+
+    // Calculate the sum of the cubes of the digits
+    while ($number > 0) {
+        $digit = $number % 10;
+        $sum += $digit ** 3;
+        $number = (int)($number / 10);
+    }
+
+    // Check if the sum is equal to the original number
+    if ($sum == $originalNumber) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// Check if the number 153 is Armstrong or not
+$number = 153;
+if (isArmstrong($number)) {
+    echo "$number is an Armstrong number.";
+} else {
+    echo "$number is not an Armstrong number.";
+}
+
+?>
+Q2. Write PHP script to demonstrate the concept of introspection for examining object.
+->
+<?php
+
+// Define a sample class
+class MyClass {
+    public $property1 = 'value1';
+    protected $property2 = 'value2';
+    private $property3 = 'value3';
+
+    public function method1() {
+        echo "Method 1 called\n";
+    }
+
+    protected function method2() {
+        echo "Method 2 called\n";
+    }
+
+    private function method3() {
+        echo "Method 3 called\n";
+    }
+}
+
+// Create an instance of the class
+$obj = new MyClass();
+
+// Get object properties
+echo "Object Properties:\n";
+$properties = get_object_vars($obj);
+foreach ($properties as $property => $value) {
+    echo "$property: $value\n";
+}
+
+// Get object methods
+echo "\nObject Methods:\n";
+$methods = get_class_methods($obj);
+foreach ($methods as $method) {
+    echo "$method\n";
+}
+
+// Check if properties and methods exist
+echo "\nProperty 'property1' exists: ";
+echo property_exists($obj, 'property1') ? "Yes\n" : "No\n";
+echo "Property 'property4' exists: ";
+echo property_exists($obj, 'property4') ? "Yes\n" : "No\n";
+echo "Method 'method1' exists: ";
+echo method_exists($obj, 'method1') ? "Yes\n" : "No\n";
+echo "Method 'method4' exists: ";
+echo method_exists($obj, 'method4') ? "Yes\n" : "No\n";
+
+?>
+slip 16
+Q1. Write a PHP script to check whether accepted number is prime or not.
+->
+<?php
+
+// Function to check if a number is prime
+function isPrime($number) {
+    // If number is less than 2, it's not prime
+    if ($number < 2) {
+        return false;
+    }
+
+    // Check for divisibility from 2 to the square root of the number
+    for ($i = 2; $i <= sqrt($number); $i++) {
+        if ($number % $i == 0) {
+            // If number is divisible by any other number, it's not prime
+            return false;
+        }
+    }
+
+    // If the loop completes without finding a divisor, the number is prime
+    return true;
+}
+
+// Accept the number from user input
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $number = $_POST['number'];
+    
+    // Check if the number is prime
+    if (is_numeric($number) && $number > 0 && is_int($number + 0)) {
+        if (isPrime($number)) {
+            echo "$number is a prime number.";
+        } else {
+            echo "$number is not a prime number.";
+        }
+    } else {
+        echo "Please enter a valid positive integer.";
+    }
+}
+
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Check Prime Number</title>
+</head>
+<body>
+
+<h2>Check Prime Number</h2>
+
+<form method="post">
+    <label for="number">Enter a number:</label><br>
+    <input type="text" id="number" name="number" required><br><br>
+    <input type="submit" value="Check">
+</form>
+
+</body>
+</html>
+
+Q2. Write a menu driven program the following operation on an associative array
+c) Reverse the order of each element’s key-value pair. [Hint: array_flip()]
+d) Traverse the element in an array in random order. [Hint: shuffle()] 
+->
+<?php
+
+// Sample associative array
+$associativeArray = array(
+    'a' => 'apple',
+    'b' => 'banana',
+    'c' => 'cherry',
+    'd' => 'date',
+    'e' => 'elderberry'
+);
+
+// Function to reverse the order of each element's key-value pair
+function reverseKeyValuePairs($array) {
+    return array_flip($array);
+}
+
+// Function to traverse the elements in an array in random order
+function traverseRandomOrder($array) {
+    shuffle($array);
+    foreach ($array as $key => $value) {
+        echo "$key: $value\n";
+    }
+}
+
+// Menu-driven program
+echo "Menu:\n";
+echo "c) Reverse the order of each element’s key-value pair\n";
+echo "d) Traverse the element in an array in random order\n";
+
+// Get user choice
+$choice = readline("Enter your choice (c/d): ");
+
+// Perform operations based on user choice
+switch ($choice) {
+    case 'c':
+        echo "\nOriginal Array:\n";
+        print_r($associativeArray);
+        echo "\nArray with Reversed Key-Value Pairs:\n";
+        print_r(reverseKeyValuePairs($associativeArray));
+        break;
+    case 'd':
+        echo "\nTraversing Array in Random Order:\n";
+        traverseRandomOrder($associativeArray);
+        break;
+    default:
+        echo "Invalid choice!";
+}
+
+?>
+
+slip 17
+Q1. Design a HTML form to accept a string. Write a php function to reverse a string.
+->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>String Reversal</title>
+</head>
+<body>
+
+<h2>String Reversal</h2>
+
+<form method="post">
+    <label for="input_string">Enter a string:</label><br>
+    <input type="text" id="input_string" name="input_string" required><br><br>
+    <input type="submit" value="Reverse">
+</form>
+
+<?php
+// PHP function to reverse a string
+function reverseString($str) {
+    return strrev($str);
+}
+
+// Check if form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Get the input string from the form
+    $input_string = $_POST['input_string'];
+
+    // Reverse the input string
+    $reversed_string = reverseString($input_string);
+
+    // Output the reversed string
+    echo "<h3>Reversed String:</h3>";
+    echo $reversed_string;
+}
+?>
+
+</body>
+</html>
+Q2. Declare array. Reverse the order of elements, making the first element last and last
+element first and similarly rearranging other array elements.[Hint : array_reverse()]
+->
+<?php
+
+// Declare an array
+$array = array('apple', 'banana', 'cherry', 'date', 'elderberry');
+
+// Reverse the order of elements in the array
+$reversedArray = array_reverse($array);
+
+// Output the original and reversed arrays
+echo "Original Array:\n";
+print_r($array);
+
+echo "\nReversed Array:\n";
+print_r($reversedArray);
+
+?>
+
+slip 18
+Q1. Design a HTML form to accept a string. Write a PHP function that checks whether a
+passed string is a palindrome or not?
+->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Palindrome Checker</title>
+</head>
+<body>
+
+<h2>Palindrome Checker</h2>
+
+<form method="post">
+    <label for="input_string">Enter a string:</label><br>
+    <input type="text" id="input_string" name="input_string" required><br><br>
+    <input type="submit" value="Check">
+</form>
+
+<?php
+// PHP function to check if a string is a palindrome
+function isPalindrome($str) {
+    // Remove spaces and convert to lowercase
+    $str = strtolower(str_replace(' ', '', $str));
+    // Reverse the string
+    $reversed_str = strrev($str);
+    // Check if the original and reversed strings are the same
+    return $str === $reversed_str;
+}
+
+// Check if form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Get the input string from the form
+    $input_string = $_POST['input_string'];
+
+    // Check if the input string is a palindrome
+    if (isPalindrome($input_string)) {
+        echo "<p>'$input_string' is a palindrome.</p>";
+    } else {
+        echo "<p>'$input_string' is not a palindrome.</p>";
+    }
+}
+?>
+
+</body>
+</html>
+
+Q2. Property (pno, description, area)
+a. Owner (oname, address, phone)
+b. An owner can have one or more properties, but a property belongs to exactly one
+owner.
+c. Accept owner name from the user. Write a PHP script which will display all
+properties which are own by that owner.
+->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Display Properties by Owner</title>
+</head>
+<body>
+    <h2>Display Properties by Owner</h2>
+
+    <form method="post">
+        <label for="ownerName">Enter Owner Name:</label>
+        <input type="text" id="ownerName" name="ownerName" required>
+        <input type="submit" value="Submit">
+    </form>
+
+    <?php
+    // Database connection parameters
+    $host = 'your_host';
+    $dbname = 'your_database';
+    $user = 'your_username';
+    $password = 'your_password';
+
+    // Connect to the database
+    try {
+        $pdo = new PDO("pgsql:host=$host;dbname=$dbname", $user, $password);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    } catch (PDOException $e) {
+        die("Error: Could not connect. " . $e->getMessage());
+    }
+
+    // Check if form is submitted
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Get owner name from the form
+        $ownerName = $_POST['ownerName'];
+
+        // Query to fetch properties owned by the specified owner
+        $sql = "SELECT p.* FROM Property p INNER JOIN Owner o ON p.oid = o.oid WHERE o.oname = :ownerName";
+
+        try {
+            // Prepare and execute the query
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':ownerName', $ownerName, PDO::PARAM_STR);
+            $stmt->execute();
+
+            // Display the results
+            $properties = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($properties) {
+                echo "<h3>Properties owned by $ownerName:</h3>";
+                echo "<ul>";
+                foreach ($properties as $property) {
+                    echo "<li>{$property['description']} (Area: {$property['area']} sq. ft.)</li>";
+                }
+                echo "</ul>";
+            } else {
+                echo "<p>No properties found for owner '$ownerName'.</p>";
+            }
+        } catch (PDOException $e) {
+            die("Error: Could not execute query. " . $e->getMessage());
+        }
+    }
+    ?>
+
+</body>
+</html>
+Q2. Property (pno, description, area)
+a. Owner (oname, address, phone)
+b. An owner can have one or more properties, but a property belongs to exactly one
+owner.
+c. Accept owner name from the user. Write a PHP script which will display all
+properties which are own by that owner.
+->
+CREATE TABLE Owner (
+    oid SERIAL PRIMARY KEY,
+    oname VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL
+);
+//
+CREATE TABLE Property (
+    pno SERIAL PRIMARY KEY,
+    description VARCHAR(255) NOT NULL,
+    area FLOAT NOT NULL,
+    oid INT NOT NULL,
+    FOREIGN KEY (oid) REFERENCES Owner(oid)
+);
+//
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Display Properties by Owner</title>
+</head>
+<body>
+    <h2>Display Properties by Owner</h2>
+
+    <form method="post">
+        <label for="ownerName">Enter Owner Name:</label>
+        <input type="text" id="ownerName" name="ownerName" required>
+        <input type="submit" value="Submit">
+    </form>
+
+    <?php
+    // Database connection parameters
+    $host = 'your_host';
+    $dbname = 'your_database';
+    $user = 'your_username';
+    $password = 'your_password';
+
+    // Connect to the database
+    try {
+        $pdo = new PDO("pgsql:host=$host;dbname=$dbname", $user, $password);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    } catch (PDOException $e) {
+        die("Error: Could not connect. " . $e->getMessage());
+    }
+
+    // Check if form is submitted
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Get owner name from the form
+        $ownerName = $_POST['ownerName'];
+
+        // Query to fetch properties owned by the specified owner
+        $sql = "SELECT p.* FROM Property p INNER JOIN Owner o ON p.oid = o.oid WHERE o.oname = :ownerName";
+
+        try {
+            // Prepare and execute the query
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':ownerName', $ownerName, PDO::PARAM_STR);
+            $stmt->execute();
+
+            // Display the results
+            $properties = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($properties) {
+                echo "<h3>Properties owned by $ownerName:</h3>";
+                echo "<ul>";
+                foreach ($properties as $property) {
+                    echo "<li>{$property['description']} (Area: {$property['area']} sq. ft.)</li>";
+                }
+                echo "</ul>";
+            } else {
+                echo "<p>No properties found for owner '$ownerName'.</p>";
+            }
+        } catch (PDOException $e) {
+            die("Error: Could not execute query. " . $e->getMessage());
+        }
+    }
+    ?>
+
+</body>
+</html>
+
+slip 19
+Q1. Write a PHP script to print following floyd’s triangle.
+A
+B C
+D E F
+G H I J
+->
+<?php
+
+// Function to print Floyd's Triangle
+function printFloydsTriangle($rows) {
+    $ascii_value = 65; // ASCII value of 'A'
+    
+    for ($i = 1; $i <= $rows; $i++) {
+        for ($j = 1; $j <= $i; $j++) {
+            echo chr($ascii_value) . " ";
+            $ascii_value++;
+        }
+        echo "<br>";
+    }
+}
+
+// Number of rows in Floyd's Triangle
+$rows = 4;
+
+// Print Floyd's Triangle
+printFloydsTriangle($rows);
+
+?>
+Q2. Write a menu driven program to perform the following stack related operations.
+c) Insert an element in stack.
+d) Delete an element from stack.[Hint: array_push(), array_pop()]
+->
+<?php
+
+// Initialize an empty stack
+$stack = array();
+
+// Function to insert an element into the stack
+function insertElement(&$stack, $element) {
+    array_push($stack, $element);
+    echo "Element '$element' inserted into the stack.\n";
+}
+
+// Function to delete an element from the stack
+function deleteElement(&$stack) {
+    if (!empty($stack)) {
+        $deletedElement = array_pop($stack);
+        echo "Element '$deletedElement' deleted from the stack.\n";
+    } else {
+        echo "Stack is empty. Cannot delete element.\n";
+    }
+}
+
+// Menu-driven program
+while (true) {
+    echo "\nMenu:\n";
+    echo "c) Insert an element into the stack\n";
+    echo "d) Delete an element from the stack\n";
+    echo "q) Quit\n";
+    $choice = readline("Enter your choice (c/d/q): ");
+
+    switch ($choice) {
+        case 'c':
+            $element = readline("Enter the element to insert into the stack: ");
+            insertElement($stack, $element);
+            break;
+        case 'd':
+            deleteElement($stack);
+            break;
+        case 'q':
+            echo "Exiting program.\n";
+            exit;
+        default:
+            echo "Invalid choice. Please try again.\n";
+    }
+}
+
+?>
+
+slip 20
+Q1. Write a PHP script to display source code of a webpage. 
+->
+<?php
+
+// Specify the URL of the webpage whose source code you want to display
+$url = "https://example.com";
+
+// Retrieve the source code of the webpage
+$html = file_get_contents($url);
+
+// Display the source code
+echo "<pre>";
+echo htmlspecialchars($html); // Convert HTML characters to entities to display properly
+echo "</pre>";
+
+?>
+Q2. Write a PHP script to following xml file.
+<cricket>
+<player> abe</player>
+<rums>100</runs>
+<wickets>20</wickets>
+</cricket>
+Store data for 5 players and display data of players who have scored more than 100 runs.
+->
+<?php
+
+// Sample XML data
+$xmlData = <<<XML
+<cricket>
+    <player>
+        <name>Abe</name>
+        <runs>100</runs>
+        <wickets>20</wickets>
+    </player>
+    <player>
+        <name>Bob</name>
+        <runs>150</runs>
+        <wickets>15</wickets>
+    </player>
+    <player>
+        <name>Charlie</name>
+        <runs>80</runs>
+        <wickets>25</wickets>
+    </player>
+    <player>
+        <name>David</name>
+        <runs>200</runs>
+        <wickets>10</wickets>
+    </player>
+    <player>
+        <name>Ethan</name>
+        <runs>120</runs>
+        <wickets>30</wickets>
+    </player>
+</cricket>
+XML;
+
+// Load XML string
+$xml = simplexml_load_string($xmlData);
+
+// Array to store player data
+$players = array();
+
+// Loop through each player
+foreach ($xml->player as $player) {
+    $name = (string) $player->name;
+    $runs = (int) $player->runs;
+    $wickets = (int) $player->wickets;
+    
+    // Store player data in the array
+    $players[] = array('name' => $name, 'runs' => $runs, 'wickets' => $wickets);
+}
+
+// Display players who have scored more than 100 runs
+echo "Players who have scored more than 100 runs:\n";
+foreach ($players as $player) {
+    if ($player['runs'] > 100) {
+        echo "Name: " . $player['name'] . ", Runs: " . $player['runs'] . ", Wickets: " . $player['wickets'] . "\n";
+    }
+}
+
+?>
+
+Q2. Write a menu driven program to perform the following queue related operations
+d) Insert an element in queue
+e) Delete an element from queue
+f) Display the contents of queue
+->
+<?php
+
+// Initialize an empty queue
+$queue = array();
+
+// Function to insert an element into the queue
+function insertElement(&$queue, $element) {
+    array_push($queue, $element);
+    echo "Element '$element' inserted into the queue.\n";
+}
+
+// Function to delete an element from the queue
+function deleteElement(&$queue) {
+    if (!empty($queue)) {
+        $deletedElement = array_shift($queue);
+        echo "Element '$deletedElement' deleted from the queue.\n";
+    } else {
+        echo "Queue is empty. Cannot delete element.\n";
+    }
+}
+
+// Function to display the contents of the queue
+function displayQueue($queue) {
+    if (!empty($queue)) {
+        echo "Contents of the queue:\n";
+        foreach ($queue as $element) {
+            echo "$element ";
+        }
+        echo "\n";
+    } else {
+        echo "Queue is empty.\n";
+    }
+}
+
+// Menu-driven program
+while (true) {
+    echo "\nMenu:\n";
+    echo "d) Insert an element into the queue\n";
+    echo "e) Delete an element from the queue\n";
+    echo "f) Display the contents of the queue\n";
+    echo "q) Quit\n";
+    $choice = readline("Enter your choice (d/e/f/q): ");
+
+    switch ($choice) {
+        case 'd':
+            $element = readline("Enter the element to insert into the queue: ");
+            insertElement($queue, $element);
+            break;
+        case 'e':
+            deleteElement($queue);
+            break;
+        case 'f':
+            displayQueue($queue);
+            break;
+        case 'q':
+            echo "Exiting program.\n";
+            exit;
+        default:
+            echo "Invalid choice. Please try again.\n";
+    }
+}
+
+?>
+///////END...////////////
